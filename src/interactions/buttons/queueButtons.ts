@@ -1,8 +1,9 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder, StringSelectMenuBuilder } from "discord.js";
 import { config } from "../../config";
 import { leaveBetQueue, getBet, updateBet } from "../../betting/betLedger";
 import { refundBet } from "../../betting/payoutService";
 import { refreshQueueStatus } from "../../queue/betQueueStatus";
+import { buildBetAmountSelectRow } from "../selects/betAmountSelect";
 
 export const QUEUE_BUTTON_IDS = {
   leave: "queue_leave",
@@ -19,7 +20,7 @@ export function buildQueuePanel() {
     .setTitle("MamoBall — Fila Apostada Solo (1v1)")
     .setDescription(
       [
-        "Use `/apostar` para escolher um valor e entrar na fila.",
+        "Selecione um dos valores abaixo para entrar na fila (ou use `/apostar`).",
         "",
         `Valores disponíveis: ${config.bet.tiers.map((v) => `R$ ${v}`).join(" • ")}`,
         "",
@@ -36,6 +37,8 @@ export function buildQueuePanel() {
     embed.setImage(config.branding.bannerUrl);
   }
 
+  const selectRow: ActionRowBuilder<StringSelectMenuBuilder> = buildBetAmountSelectRow();
+
   const leaveRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()
       .setCustomId(QUEUE_BUTTON_IDS.leave)
@@ -44,7 +47,7 @@ export function buildQueuePanel() {
       .setStyle(ButtonStyle.Danger)
   );
 
-  return { embeds: [embed], components: [leaveRow] };
+  return { embeds: [embed], components: [selectRow, leaveRow] };
 }
 
 export async function handleQueueButton(interaction: ButtonInteraction): Promise<void> {
