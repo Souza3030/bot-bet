@@ -60,7 +60,7 @@ export async function handleBetAmountSelect(interaction: StringSelectMenuInterac
 
   const pixKeyTypeInput = new TextInputBuilder()
     .setCustomId(BET_INFO_MODAL_INPUTS.pixKeyType)
-    .setLabel("Tipo da chave: CPF, CNPJ, EMAIL, PHONE ou RANDOM")
+    .setLabel("Tipo: CPF, CNPJ, EMAIL, PHONE ou RANDOM")
     .setStyle(TextInputStyle.Short)
     .setPlaceholder("Ex: CPF")
     .setRequired(true);
